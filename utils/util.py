@@ -1,0 +1,42 @@
+import asyncio
+import discord
+from discord.ext.buttons import Paginator
+
+class Pag(Paginator):
+    """
+    Used to Create Paginated Embeds
+    """
+    async def teardown(self):
+        try:
+            await self.page.clear_reactions()
+        except discord.HTTPException:
+            pass
+
+async def GetMessage(bot, ctx, contentOne="Default Message", contentTwo="\uFEFF", timeout=100):
+    """
+    This function sends an embed containing the params and then waits for a message to return
+
+    Params:
+    - bot (commands.Bot object) :
+    - ctx (context object) : used for sending msgs and stuff
+
+    - Optional Params:
+    - contentOne (string) : Embed Title
+    - contentTwo (string) : Embed Description
+    - timeout (int) : Timeout for wait_for
+
+    Returns:
+    - msg.content (string): If a message is detected, the content will be returned
+    or
+    - False (bool) : If a timeout occurs
+    """
+    em = discord.Embed(title=f'{contentOne}', description=f'{contentTwo}')
+    sent = await ctx.send(embed=em)
+    try:
+        msg = await bot.wait_for("message", timeout=timeout, check=lambda message: message.author == ctx.author and message.channel == ctx.channel)
+        if msg:
+            return msg.content
+
+    except asyncio.TimoutError:
+        return False
+
