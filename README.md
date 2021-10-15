@@ -10,5 +10,5 @@ A Simple Python Discord Bot
 - aiohttp (`pip3 install --upgrade aiohttp`)
 
 # How to Use  
-Download the file or Clone the Repo and run [main.py](https://github.com/TurtleHelm/Discord-Bot/blob/main/main.py)  
+Download the file or Clone the Repo, Add your Token(s) and run [bot.py](https://github.com/TurtleHelm/Discord-Bot/blob/main/bot.py)  
 
