@@ -1,47 +1,30 @@
-import discord
+import discord, platform, random, asyncio
+from botutils import json, decorators
 from discord.ext import commands
-import platform
-import random
-import asyncio
-import re
-import utils.json
-import utils.decorators
-from utils.util import GetMessage
 
-def count(counter):
-    counter = counter + 1    
-    return
+def count(counter): counter = counter + 1
 
 class Commands(commands.Cog):
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot): self.bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(self):
-        print(f'{self.__class__.__name__} Cog loaded')
+    async def on_ready(self): print(f'{self.__class__.__name__} Cog loaded')
 
     @commands.command(name='hi', description="A simple Test command", aliases=['hello'], usage="<command>")
     async def _hi(self, ctx):
         await ctx.send(f'Hi {ctx.author.mention}!')
 
-    @commands.command(name="echo", description="Repeats a specific Users Message", usage="<command>")
-    async def echo(self, ctx):
-        await ctx.message.delete()
-        em = discord.Embed(title="Please tell me what you want me to repeat",description="This request will timeout after 1 minute")
-        sent =  await ctx.send("embed-em")
-        try:
-            msg = await self.bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author and message.channel == ctx.channel)
-            if msg:
-                await sent.delete()
-                await msg.delete()
-                await ctx.send(msg.content)
-        except asyncio.TimeoutError:
-            await sent.delete()
-            await ctx.send("Cancelling due to timeout", delete_after=10)
+    @commands.command(name="echo", description="Repeats a specific Users Message", usage="<command> <sentence>")
+    async def echo(self, ctx, *args):
+        
+        if args == (): await ctx.send('Remember to add text to echo!', delete_after=10)
+        else:
+            await ctx.message.delete()
+            await ctx.send(" ".join(args))
 
     @commands.command(name="channelstats", description="Sends an embed with channel stats", aliases=['cs'], usage="<command>")
-    @utils.decorators.mc_Perm()
+    @decorators.mc_Perm()
     async def channelstats(self, ctx):
         channel = ctx.channel
         em = discord.Embed(title=f"Stats for **{channel.name}**", description=f"{'Category: {}'.format(channel.category.name) if channel.category else 'This channel is not in a category'}", color=random.choice(self.bot.color_list))
@@ -58,5 +41,4 @@ class Commands(commands.Cog):
 
         await ctx.send(embed=em)
 
-def setup(bot):
-    bot.add_cog(Commands(bot))
+async def setup(bot): await bot.add_cog(Commands(bot))

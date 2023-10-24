@@ -34,9 +34,7 @@ async def GetMessage(bot, ctx, contentOne="Default Message", contentTwo="\uFEFF"
     sent = await ctx.send(embed=em)
     try:
         msg = await bot.wait_for("message", timeout=timeout, check=lambda message: message.author == ctx.author and message.channel == ctx.channel)
-        if msg:
-            return msg.content
+        if msg: return msg.content
 
-    except asyncio.TimoutError:
-        return False
+    except asyncio.TimoutError: return False
 
